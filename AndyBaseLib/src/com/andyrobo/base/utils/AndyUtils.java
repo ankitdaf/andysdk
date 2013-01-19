@@ -2,11 +2,25 @@ package com.andyrobo.base.utils;
 
 import java.util.List;
 
+import com.andyrobo.base.AndyActivity;
+
 import android.hardware.Camera.Size;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.view.Display;
 import android.view.Surface;
 
 public class AndyUtils {
+	
+	public static final String getWifiAddress(AndyActivity a) {
+		WifiManager myWifiManager = (WifiManager) a.getSystemService(AndyActivity.WIFI_SERVICE);
+		WifiInfo myWifiInfo = myWifiManager.getConnectionInfo();
+
+		String ipAddress = android.text.format.Formatter
+				.formatIpAddress(myWifiInfo.getIpAddress());
+
+		return ipAddress;
+	}
 	
 	public static Size getOptimalPreviewSize(List<Size> sizes, int w, int h) {
 		final double ASPECT_TOLERANCE = 0.05;
