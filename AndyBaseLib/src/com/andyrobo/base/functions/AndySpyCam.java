@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.List;
 
 import android.graphics.Bitmap;
@@ -11,24 +12,58 @@ import android.hardware.Camera;
 import android.hardware.Camera.PictureCallback;
 import android.hardware.Camera.PreviewCallback;
 import android.hardware.Camera.Size;
+import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceHolder.Callback;
+import android.view.SurfaceView;
 
 import com.andyrobo.base.utils.AndyUtils;
 
 public class AndySpyCam implements PreviewCallback, Callback, PictureCallback {
 
+	private static final String TAG = "AndySpyCam";
+	
 	private Camera mCamera;
 	private boolean mPreviewRunning;
 	private boolean broadCast;
+	private InetAddress ipAddress;
+
 	private ImageBroadCaster imageBroadCaster = new ImageBroadCaster();
 	
+	public static final AndySpyCam SPYCAM = new AndySpyCam();
+	
 	private AndySpyCam() {
-		//create for singleton INSTANCE
+		//create for singleton SPYCAM instance
+	}
+	
+	public void init(SurfaceView sView) {
+		assert sView != null;
+		
+		SurfaceHolder holder = sView.getHolder();
+		holder.addCallback(this);
+		holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+	}
+	
+	public boolean setReceiverIP(String ipAddress) {
+		try {
+			this.ipAddress = InetAddress.getByName(ipAddress);
+			return true;
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
+	public void startSpyMode() {
+		this.broadCast = true;
+	}
+	
+	public void stopSpyMode() {
+		this.broadCast = false;
 	}
 
 	public void onPictureTaken(byte[] data, Camera camera) {
-		System.out.println("CLICK!");
+		Log.d(TAG, "Picture Capture");
 	}
 
 	public void onPreviewFrame(byte[] data, Camera cam) {
@@ -38,6 +73,7 @@ public class AndySpyCam implements PreviewCallback, Callback, PictureCallback {
 	}
 
 	public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
+		Log.d(TAG, "surface changed");
 		if (mPreviewRunning) {
 			mCamera.stopPreview();
 		}
@@ -54,6 +90,7 @@ public class AndySpyCam implements PreviewCallback, Callback, PictureCallback {
 	}
 
 	public void surfaceCreated(SurfaceHolder holder) {
+		Log.d(TAG, "surface created");
 		mCamera = Camera.open();
 
 		Camera.Parameters p = mCamera.getParameters();
@@ -73,16 +110,13 @@ public class AndySpyCam implements PreviewCallback, Callback, PictureCallback {
 	}
 
 	public void surfaceDestroyed(SurfaceHolder arg0) {
+		Log.d(TAG, "surface destroyed");
 		if (mCamera != null) {
 			mCamera.stopPreview();
 			mCamera.setPreviewCallback(null);
 			mCamera.release();
 		}
 		mPreviewRunning = false;
-	}
-
-	public void setBroadCast(boolean b) {
-		this.broadCast = b;
 	}
 	
 	private class ImageBroadCaster {
@@ -96,12 +130,10 @@ public class AndySpyCam implements PreviewCallback, Callback, PictureCallback {
 		int[] mRGBData;
 		int width_ima, height_ima;
 
-		private InetAddress ipAddress;
 		private DatagramSocket socket;
 
 		public ImageBroadCaster() {
 			try {
-				//this.ipAddress = InetAddress.getByName("");
 				this.socket = new DatagramSocket();
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -145,7 +177,7 @@ public class AndySpyCam implements PreviewCallback, Callback, PictureCallback {
 								ipAddress, PREVIEW_PORT);
 						socket.send(packet);
 					} catch (Exception e) {
-						e.printStackTrace();
+						Log.e(TAG, e.getMessage());
 					}
 				}
 				frame_nb++;
