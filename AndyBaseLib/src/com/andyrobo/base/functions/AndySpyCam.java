@@ -55,10 +55,12 @@ public class AndySpyCam implements PreviewCallback, Callback, PictureCallback {
 	}
 	
 	public void startSpyMode() {
+		Log.i(TAG, "Starting Broadcast");
 		this.broadCast = true;
 	}
 	
 	public void stopSpyMode() {
+		Log.i(TAG, "Ending Broadcast");
 		this.broadCast = false;
 	}
 
