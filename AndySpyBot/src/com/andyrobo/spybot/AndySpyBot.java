@@ -42,6 +42,8 @@ public class AndySpyBot extends AndyActivity {
 		if (isChecked) {
 			if (cam.setReceiverIP(getIP())) {
 				cam.startSpyMode();
+			} else {
+				System.out.println("Cannot set recevier IP to "  + getIP());
 			}
 		} else {
 			cam.stopSpyMode();
