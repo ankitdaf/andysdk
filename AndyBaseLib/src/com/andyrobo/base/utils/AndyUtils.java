@@ -9,6 +9,7 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.view.Display;
 import android.view.Surface;
+import android.view.ViewGroup.LayoutParams;
 
 public class AndyUtils {
 	
@@ -80,5 +81,9 @@ public class AndyUtils {
 		}
 
 		return (-degrees + 360) % 360;
+	}
+
+	public static LayoutParams getLayoutFill() {
+		return new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
 	}
 }
