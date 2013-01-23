@@ -5,15 +5,31 @@ import android.content.Intent;
 import android.graphics.drawable.TransitionDrawable;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 public abstract class AndySplashActivity extends Activity {
 
+	/**
+	 * On creation of this activity, we load the default Andy 
+	 * Splash Screen which is the Andy Logo. There is an xml file 
+	 * transition.xml in the res/layout which changes the background of
+	 * the splash screen
+	 * 
+	 * After the splash is displayed, the main activity is launched 
+	 * based on intent. The class of the main activity is to be provided
+	 * by the class extending this class via the getMainActivityClass function
+	 */
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	protected final void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
+		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+				WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		
 		setContentView(R.layout.activity_splash);
 		
 		TextView tv1 = (TextView) findViewById(R.id.textView1);
@@ -65,10 +81,14 @@ public abstract class AndySplashActivity extends Activity {
 		}, 3500);
 	}
 
+	/**
+	 * The implementing class must provide the class of the Main Activity
+	 * @return the class of the main Activity (e.g. MyMainActivity.class)
+	 */
 	protected abstract Class<?> getMainActivityClass();
 	
 	@Override
-	public void onBackPressed() {
+	public final void onBackPressed() {
 		//Do Nothing!
 		// 		android.os.Process.killProcess(android.os.Process.myPid());
 	}

@@ -1,24 +1,36 @@
 package com.andyrobo.base;
 
 import android.app.Activity;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.Window;
 import android.view.WindowManager;
 
+/**
+ * This 
+ * 
+ * @author abheek
+ *
+ */
 public abstract class AndyActivity extends Activity {
 
 	protected static final String TAG = "AndyActivity";
 
+	protected final void setFullScreen() {
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
+		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+		WindowManager.LayoutParams.FLAG_FULLSCREEN);
+	}
+	
 	@Override
 	protected final void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-				WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
+		
+		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
 		//registerForContextMenu(view)
 		
 		setContentView();
@@ -34,6 +46,13 @@ public abstract class AndyActivity extends Activity {
 		// TODO Auto-generated method stub
 		return super.onCreateOptionsMenu(menu);
 	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		Log.i(TAG, item.toString());
+		return super.onOptionsItemSelected(item);
+	}
+	
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();

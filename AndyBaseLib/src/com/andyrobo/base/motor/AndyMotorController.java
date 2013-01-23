@@ -4,11 +4,16 @@ import java.util.Arrays;
 
 import android.content.Context;
 import android.media.AudioManager;
+import android.util.Log;
 
-public class AndyMotorController implements Runnable {
+public class AndyMotorController {
+
+	private static final String TAG = "AndyMotorController";
+
 	public static final AndyMotorController INSTANCE = new AndyMotorController();
+
 	private static final long SEND_DELAY = 100;
-	private static final int SKIP_MAX = (int) (1000 / SEND_DELAY);
+	private static final int SKIP_MAX = (int) (500 / SEND_DELAY);
 	private byte[] sendBytes = new byte[] { 0x0A };
 	private static int PADDING_BYTES;
 
@@ -17,28 +22,51 @@ public class AndyMotorController implements Runnable {
 	private int skips = 0;
 
 	private int currentVolume;
+	private Thread mct;
 
-	@Override
-	public void run() {
+	private AndyMotorController() {
+		// for singleton
 		AudioSerialSingleTrack.activate();
-		shouldRun = true;
-		while (shouldRun) {
-			if (send || skips >= SKIP_MAX) {
-				System.out.println("Sending..");
-				AudioSerialSingleTrack.output(this.sendBytes);
-				skips = 0;
-				this.send = false;
-			} else {
-				// System.out.println("Skips: " + skips);
-				skips = skips + 1;
-			}
-			try {
-				Thread.sleep(SEND_DELAY);
-			} catch (InterruptedException e) {
-				break;
-			}
+	}
+
+	public void startController() {
+		if(mct != null && mct.isAlive()) {
+			stopController();
 		}
-		shouldRun = false;
+		
+		mct = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				shouldRun = true;
+				while (shouldRun) {
+					if (send || skips >= SKIP_MAX) {
+						// System.out.println("Sending..");
+						AudioSerialSingleTrack.output(sendBytes);
+						skips = 0;
+						send = false;
+					} else {
+						// System.out.println("Skips: " + skips);
+						skips = skips + 1;
+					}
+					try {
+						Thread.sleep(SEND_DELAY);
+					} catch (InterruptedException e) {
+						break;
+					}
+				}
+				shouldRun = false;
+			}
+		});
+
+		mct.start();
+	}
+
+	public void stopController() {
+		if (mct != null) {
+			shouldRun = false;
+			mct.interrupt();
+			mct = null;
+		}
 	}
 
 	public void andyMove(int leftSpeed, int rightSpeed) {
@@ -66,7 +94,8 @@ public class AndyMotorController implements Runnable {
 			this.sendBytes = sendBytes.clone();
 		}
 	}
-
+	
+	//TODO: remove redundant codes
 	public void andyMove(int leftSpeed, int rightSpeed, int leftDirection,
 			int rightDirection) {
 		byte[] sendBytes = new byte[PADDING_BYTES + 5];
@@ -112,12 +141,12 @@ public class AndyMotorController implements Runnable {
 		if (Arrays.equals(newValues, sendBytes)) {
 			return false;
 		}
-		// System.out.println("New Data");
 		return true;
 	}
 
 	public void terminate() {
-		deactivateAudio();
+		stopController();
+		AudioSerialSingleTrack.deactivate();
 	}
 
 	public void setAudioParams(int baudRate, int characterSpacing,
@@ -129,13 +158,9 @@ public class AndyMotorController implements Runnable {
 		AudioSerialSingleTrack.UpdateParameters(true);
 		PADDING_BYTES = padding;
 
-		System.out.println("New characterdelay: " + characterSpacing);
-		System.out.println("New levelflip: " + flip);
-		System.out.println("New padding: " + padding);
-	}
-
-	private void deactivateAudio() {
-		AudioSerialSingleTrack.deactivate();
+		Log.i(TAG, "New characterdelay: " + characterSpacing);
+		Log.i(TAG, "New levelflip: " + flip);
+		Log.i(TAG, "New padding: " + padding);
 	}
 
 	public void setVolume(boolean shouldSetMax, Context context) {
@@ -144,7 +169,6 @@ public class AndyMotorController implements Runnable {
 		} else {
 			setPreviousVolume(context);
 		}
-
 	}
 
 	public void setMaxVolume(Context context) {
