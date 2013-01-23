@@ -1,0 +1,73 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".AndyMotorTest"
+    tools:ignore="HardcodedText" >
+
+    <EditText
+        android:id="@+id/etRightSpeed"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/etLeftSpeed"
+        android:layout_alignBottom="@+id/etLeftSpeed"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="15dp"
+        android:ems="10"
+        android:inputType="numberSigned" >
+    </EditText>
+
+    <TextView
+        android:id="@+id/textRightSpeed"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/etRightSpeed"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="30dp"
+        android:gravity="center_vertical|center_horizontal"
+        android:text="Right Speed" />
+
+    <TextView
+        android:id="@+id/textLeftSpeed"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/textRightSpeed"
+        android:layout_alignBottom="@+id/textRightSpeed"
+        android:layout_alignLeft="@+id/etLeftSpeed"
+        android:gravity="center_vertical|center_horizontal"
+        android:text="Left Speed"
+        tools:ignore="HardcodedText" />
+
+    <EditText
+        android:id="@+id/etLeftSpeed"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/textLeftSpeed"
+        android:layout_marginLeft="16dp"
+        android:ems="10"
+        android:inputType="numberSigned" >
+
+        <requestFocus />
+    </EditText>
+
+    <Button
+        android:id="@+id/btnSetSpeed"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/toggleRunController"
+        android:layout_below="@+id/etRightSpeed"
+        android:layout_marginTop="16dp"
+        android:text="Set Speeds" />
+
+    <ToggleButton
+        android:id="@+id/toggleRunController"
+        android:layout_width="200dp"
+        android:layout_height="80dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="91dp"
+        android:textOff="Start Controller"
+        android:textOn="Stop Controller" />
+
+</RelativeLayout>
