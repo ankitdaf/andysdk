@@ -2,8 +2,6 @@ package com.andyrobo.base.utils;
 
 import java.util.List;
 
-import com.andyrobo.base.AndyActivity;
-
 import android.hardware.Camera.Size;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
@@ -11,7 +9,13 @@ import android.view.Display;
 import android.view.Surface;
 import android.view.ViewGroup.LayoutParams;
 
+import com.andyrobo.base.AndyActivity;
+
 public class AndyUtils {
+	
+	public static final int ByteToInt(byte b) {
+		return b & 0xff;
+	}
 	
 	public static final String getWifiAddress(AndyActivity a) {
 		WifiManager myWifiManager = (WifiManager) a.getSystemService(AndyActivity.WIFI_SERVICE);
