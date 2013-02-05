@@ -13,10 +13,9 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 
 import com.andyrobo.base.AndyActivity;
-import com.andyrobo.base.functions.AndyFace;
+import com.andyrobo.base.graphics.AndyFace;
 import com.andyrobo.base.graphics.ArrowView;
 import com.andyrobo.base.motor.AndyMotorController;
 
@@ -49,19 +48,12 @@ public class HelloAndy extends AndyActivity implements OnGestureListener {
 
 	@Override
 	protected void setContentView() {
-		FrameLayout faceLayout = new FrameLayout(this);
-		faceLayout.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT,
-				LayoutParams.FILL_PARENT));
-		faceLayout.setKeepScreenOn(true);
-
 		arrow = new ArrowView(this);
 		arrow.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
 				LayoutParams.WRAP_CONTENT));
 
-		ImageView face = AndyFace.init(this, true);
-
-		faceLayout.addView(face, 0);
-		// faceLayout.addView(arrow, 1);
+		FrameLayout face = AndyFace.init(this, true);
+		//face.addView(arrow, 1);
 
 		gDetector = new GestureDetector(this);
 		showHelp();
@@ -73,7 +65,7 @@ public class HelloAndy extends AndyActivity implements OnGestureListener {
 		hideArrow();
 		receiveTouch = true;
 
-		setContentView(faceLayout);
+		setContentView(face);
 	}
 
 	private void hideArrow() {
