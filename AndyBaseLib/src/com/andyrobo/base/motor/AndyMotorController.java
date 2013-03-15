@@ -137,6 +137,10 @@ public class AndyMotorController {
 			this.send = true;
 			this.sendBytes = sendBytes.clone();
 		}
+		else {
+			this.send = false;
+			this.sendBytes = null;
+		}
 	}
 	
 	public int[] getWheelSpeeds(int maxSpeed, double radians) {
