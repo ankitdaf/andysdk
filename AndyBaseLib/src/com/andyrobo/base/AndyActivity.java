@@ -26,8 +26,8 @@ public abstract class AndyActivity extends Activity {
 		WindowManager.LayoutParams.FLAG_FULLSCREEN);
 	}
 	
-	@Override
-	protected final void onCreate(Bundle savedInstanceState) {
+	
+	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
 		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
