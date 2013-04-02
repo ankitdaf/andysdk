@@ -13,6 +13,7 @@ class AudioSerialSingleTrack {
 	private static Thread audiothread = null;
 	private static AudioTrack audiotrk = null;
 	private static byte generatedSnd[] = null;
+	private static AudioControl audioControl;
 
 	// set that can be edited externally
 	public static int max_sampleRate = 48000;
@@ -37,6 +38,14 @@ class AudioSerialSingleTrack {
 	public static LinkedList<byte[]> playque = new LinkedList<byte[]>();
 	public static boolean active = false;
 
+/*	public static void setup(PApplet parent)
+	{
+		audioControl = new AudioControl();
+		audioControl.getAudioControl(parent);
+		audioControl.setMaxVolume(parent);
+		//audioControl.setCallsOff(parent);
+	}
+*/
 	public static void UpdateParameters(boolean AutoSampleRate) {
 		baudRate = new_baudRate; // we're not forcing standard baud rates here
 									// specifically because we want to allow odd
@@ -64,12 +73,17 @@ class AudioSerialSingleTrack {
 				AudioFormat.ENCODING_PCM_8BIT);
 
 		if (audiotrk == null) {
-			audiotrk = new AudioTrack(AudioManager.STREAM_MUSIC, sampleRate,
+			audiotrk = getTrack();
+		}
+	}
+	
+	private static AudioTrack getTrack() {
+		return new AudioTrack(AudioManager.STREAM_MUSIC, sampleRate,
 					AudioFormat.CHANNEL_CONFIGURATION_MONO,
 					AudioFormat.ENCODING_PCM_8BIT, minbufsize,
 					AudioTrack.MODE_STATIC);
 		}
-	}
+
 
 	public static void output(String sendthis) {
 		if (sendthis == null)
@@ -214,10 +228,23 @@ class AudioSerialSingleTrack {
 	public static void deactivate() {
 		if (audiotrk != null) {
 			if (isAudioTrackInitialized()) {
-				audiotrk.stop();
+				//audiotrk.stop(); this is probably causing the problem with illegalstateexception
+				audiotrk.pause();
+				audiotrk.flush();
 			}
 			audiotrk.release();
 		}
+//		audioControl.relinquishAudioControl(parent);
+//		audioControl.setCallsOn(parent);
+	}
+	
+//	public static void stop(PApplet parent) {
+	public static void stop() {
+		if (audiotrk != null) {
+			if (isAudioTrackInitialized()) {
+				audiotrk.stop();
+			}
+	}
 	}
 
 	public static boolean isPlaying() {
@@ -232,7 +259,7 @@ class AudioSerialSingleTrack {
 	private static int length;
 
 	private static void playSound() {
-		if (audiotrk != null) {
+		if (audiotrk != null && isAudioTrackInitialized()) {
 			if (generatedSnd != null) {
 				while (audiotrk.getPlaybackHeadPosition() < (generatedSnd.length))
 					SystemClock.sleep(50); // let existing sample finish first:

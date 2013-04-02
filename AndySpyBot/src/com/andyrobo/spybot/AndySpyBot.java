@@ -1,6 +1,5 @@
 package com.andyrobo.spybot;
 
-import android.os.Bundle;
 import android.view.Menu;
 import android.view.SurfaceView;
 import android.widget.CompoundButton;
@@ -17,9 +16,7 @@ public class AndySpyBot extends AndyActivity {
 	private EditText ipAddress;
 	private final AndySpyCam cam = AndySpyCam.SPYCAM;
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
+	protected void setContentView() {	
 		setContentView(R.layout.activity_andy_spy_bot);
 
 		ipAddress = (EditText) findViewById(R.id.etSendIP);
@@ -37,13 +34,13 @@ public class AndySpyBot extends AndyActivity {
 			}
 		});
 	}
-
+	
 	protected void handleSpyToggle(boolean isChecked) {
 		if (isChecked) {
 			if (cam.setReceiverIP(getIP())) {
 				cam.startSpyMode();
 			} else {
-				System.out.println("Cannot set recevier IP to "  + getIP());
+				System.out.println("Cannot set recevier IP to " + getIP());
 			}
 		} else {
 			cam.stopSpyMode();
@@ -53,12 +50,10 @@ public class AndySpyBot extends AndyActivity {
 	private String getIP() {
 		return ipAddress.getText().toString();
 	}
-
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.activity_andy_spy_bot, menu);
-		return true;
+		return super.onCreateOptionsMenu(menu);
 	}
-
 }

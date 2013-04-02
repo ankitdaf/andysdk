@@ -93,13 +93,15 @@ public class AndySpyCam implements PreviewCallback, Callback, PictureCallback {
 
 	public void surfaceCreated(SurfaceHolder holder) {
 		Log.d(TAG, "surface created");
-		mCamera = Camera.open(); // wont for devices with no back camera , eg Nexus 7
+		mCamera = Camera.open(0); // open() wont for devices with no back camera , eg Nexus 7, use open(0)
 
 		Camera.Parameters p = mCamera.getParameters();
 		p.setPreviewFrameRate(30);
-		p.setSceneMode(Camera.Parameters.SCENE_MODE_SPORTS);
-		p.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
-		p.setColorEffect(Camera.Parameters.EFFECT_AQUA);
+		p.setPreviewSize(1100,700);
+		//p.setPreviewFpsRange(25, 30);
+		//p.setSceneMode(Camera.Parameters.SCENE_MODE_SPORTS); // Not supported in all devices eg. Nexus 7
+		//p.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
+		//p.setColorEffect(Camera.Parameters.EFFECT_AQUA);
 		mCamera.setParameters(p);
 
 		try {
@@ -177,6 +179,7 @@ public class AndySpyCam implements PreviewCallback, Callback, PictureCallback {
 						size_p = data2.length;
 						DatagramPacket packet = new DatagramPacket(data2, size_p,
 								ipAddress, PREVIEW_PORT);
+						socket.send(packet);
 
 					} catch (Exception e) {
 						//Log.e(TAG, e.getMessage());

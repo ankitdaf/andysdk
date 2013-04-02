@@ -14,10 +14,11 @@
 
     <SurfaceView
         android:id="@+id/surfaceView"
-        android:layout_width="10dp"
-        android:layout_height="10dp"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="20dp" />
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_centerHorizontal="true"
+        android:layout_centerInParent="false"
+        android:layout_marginTop="50dp" />
 
     <ToggleButton
         android:id="@+id/tbtnSpyMode"
@@ -25,7 +26,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/etSendIP"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="33dp"
+        android:layout_marginTop="50dp"
         android:textOff="SpyMode OFF"
         android:textOn="SpyMode ON" />
 
