@@ -128,10 +128,10 @@ public class HelloAndy extends AndyActivity implements OnGestureListener {
 	public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
 			float velocityY) {
 
-		int velX = processFling(velocityX, screenWidth);
-		int velY = processFling(velocityY, screenHeight);
+		float velX = processFling(e2.getX()-e1.getX(), screenWidth);
+		float velY = processFling(e1.getY()-e2.getY(), screenHeight);
 
-		double a = Math.atan2(velX, velY);
+		double a = Math.atan2(velX, velY); // Order intentionally reversed
 		a = snapAngle(Math.toDegrees(a));
 
 		final double angle = Math.toRadians(a);
@@ -242,10 +242,8 @@ public class HelloAndy extends AndyActivity implements OnGestureListener {
 		return new int[] { sL * ls, sR * rs };
 	}
 
-	private int processFling(float velocity, int max) {
-		int v = (int) (velocity / max);
-		v = (250 * v) / 6;
-		return v;
+	private float processFling(float velocity, int max) {
+		return (float) (velocity / max);
 	}
 
 	@Override

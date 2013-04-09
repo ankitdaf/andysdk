@@ -46,6 +46,7 @@ public class AndyMotorController {
 							//showBytes(sendBytes);
 							skips = 0;
 							send = false;
+							sendBytes = null;
 						}
 					} else {
 						// System.out.println("Skips: " + skips);
@@ -136,6 +137,10 @@ public class AndyMotorController {
 		if (isNewStream(sendBytes)) {
 			this.send = true;
 			this.sendBytes = sendBytes.clone();
+		}
+		else {
+			this.send = false;
+			this.sendBytes = null;
 		}
 	}
 	

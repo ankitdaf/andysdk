@@ -12,6 +12,7 @@ import android.hardware.Camera;
 import android.hardware.Camera.PictureCallback;
 import android.hardware.Camera.PreviewCallback;
 import android.hardware.Camera.Size;
+import android.os.AsyncTask;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceHolder.Callback;
@@ -28,7 +29,6 @@ public class AndySpyCam implements PreviewCallback, Callback, PictureCallback {
 	private boolean broadCast;
 	private InetAddress ipAddress;
 
-	private ImageBroadCaster imageBroadCaster = new ImageBroadCaster();
 	
 	public static final AndySpyCam SPYCAM = new AndySpyCam();
 	
@@ -70,7 +70,7 @@ public class AndySpyCam implements PreviewCallback, Callback, PictureCallback {
 
 	public void onPreviewFrame(byte[] data, Camera cam) {
 		if (broadCast) {
-			imageBroadCaster.sendImage(this.mCamera, data);
+			new ImageBroadCaster().execute(this.mCamera, data);
 		}
 	}
 
@@ -93,13 +93,15 @@ public class AndySpyCam implements PreviewCallback, Callback, PictureCallback {
 
 	public void surfaceCreated(SurfaceHolder holder) {
 		Log.d(TAG, "surface created");
-		mCamera = Camera.open();
+		mCamera = Camera.open(0); // open() wont for devices with no back camera , eg Nexus 7, use open(0)
 
 		Camera.Parameters p = mCamera.getParameters();
 		p.setPreviewFrameRate(30);
-		p.setSceneMode(Camera.Parameters.SCENE_MODE_SPORTS);
-		p.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
-		p.setColorEffect(Camera.Parameters.EFFECT_AQUA);
+		p.setPreviewSize(1100,700);
+		//p.setPreviewFpsRange(25, 30);
+		//p.setSceneMode(Camera.Parameters.SCENE_MODE_SPORTS); // Not supported in all devices eg. Nexus 7
+		//p.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
+		//p.setColorEffect(Camera.Parameters.EFFECT_AQUA);
 		mCamera.setParameters(p);
 
 		try {
@@ -121,7 +123,7 @@ public class AndySpyCam implements PreviewCallback, Callback, PictureCallback {
 		mPreviewRunning = false;
 	}
 	
-	private class ImageBroadCaster {
+	private class ImageBroadCaster extends AsyncTask {
 		private static final int PREVIEW_PORT = 9020;
 
 		public final static int HEADER_SIZE = 5;
@@ -178,8 +180,10 @@ public class AndySpyCam implements PreviewCallback, Callback, PictureCallback {
 						DatagramPacket packet = new DatagramPacket(data2, size_p,
 								ipAddress, PREVIEW_PORT);
 						socket.send(packet);
+
 					} catch (Exception e) {
-						Log.e(TAG, e.getMessage());
+						//Log.e(TAG, e.getMessage());
+						e.printStackTrace();
 					}
 				}
 				frame_nb++;
@@ -261,7 +265,13 @@ public class AndySpyCam implements PreviewCallback, Callback, PictureCallback {
 			decodeYUV420SP(mRGBData, camData, width_ima, height_ima);
 			mBitmap.setPixels(mRGBData, 0, width_ima, 0, 0, width_ima, height_ima);
 
+		}
+
+		@Override
+		protected Object doInBackground(Object... arg0) {
+			sendImage((Camera) arg0[0], (byte[]) arg0[1]);
 			sendUDP();
+			return null;
 		}
 	}
 }
