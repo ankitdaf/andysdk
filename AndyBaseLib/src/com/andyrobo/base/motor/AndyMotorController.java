@@ -46,6 +46,7 @@ public class AndyMotorController {
 							//showBytes(sendBytes);
 							skips = 0;
 							send = false;
+							sendBytes = null;
 						}
 					} else {
 						// System.out.println("Skips: " + skips);
