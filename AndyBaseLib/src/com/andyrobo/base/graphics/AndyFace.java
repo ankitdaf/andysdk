@@ -1,8 +1,6 @@
 package com.andyrobo.base.graphics;
 
-import com.andyrobo.base.AndyActivity;
-import com.andyrobo.base.R;
-
+import android.app.Activity;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.view.ViewGroup.LayoutParams;
@@ -10,6 +8,8 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+
+import com.andyrobo.base.R;
 
 public class AndyFace {
 	
@@ -21,11 +21,11 @@ public class AndyFace {
 	public static final byte SCARED = 0x0e;
 
 	private static ImageView img;
-	private static AndyActivity activity;
+	private static Activity activity;
 
 	private static final Handler h = new Handler();
 
-	public static FrameLayout init(AndyActivity a, boolean fullScreen) {
+	public static FrameLayout init(Activity a, boolean fullScreen) {
 		activity = a;
 		FrameLayout faceLayout = new FrameLayout(a);
 		faceLayout.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT,
