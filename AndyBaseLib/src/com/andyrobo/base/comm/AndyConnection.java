@@ -18,9 +18,7 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.net.ConnectivityManager;
 import android.net.DhcpInfo;
 import android.net.NetworkInfo;
@@ -42,7 +40,6 @@ public class AndyConnection {
 	private static WifiManager wManager;
 	private static InetAddress broadcastInet;
 	private boolean abort;
-	private static boolean WIFI_STATE;
 	private String connectionPassword;
 
 	public int getPort(String portName) {
@@ -130,16 +127,6 @@ public class AndyConnection {
 		return deviceName;
 	}
 
-	public void initWifi(Context context) {
-		if (wManager == null)
-			try {
-				wManager = (WifiManager) context
-						.getSystemService(Context.WIFI_SERVICE);
-
-			} catch (Exception exception) {
-				exception.printStackTrace();
-			}
-	}
 
 	public String getMyIP() {
 		if (myIP != null) {
@@ -325,18 +312,6 @@ public class AndyConnection {
 		}
 	}
 
-	public boolean wifiStatus() {
-		if (wManager != null) {
-			WIFI_STATE = wManager.isWifiEnabled();
-			return WIFI_STATE;
-		}
-		return false;
-	}
-
-	public void setPreviousWifiState() {
-		wifiEnable(WIFI_STATE);
-	}
-
 	private boolean isNetworkAvailable(Context context) {
 		ConnectivityManager connectivityManager = (ConnectivityManager) context
 				.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -365,37 +340,7 @@ public class AndyConnection {
 		return false;
 	}
 
-	public void wifiEnable(Context context) {
-		initWifi(context);
-		if (wifiStatus()) {
-			System.out.println("Wifi ON");
-		} else {
 
-			DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					switch (which) {
-					case DialogInterface.BUTTON_POSITIVE:
-						wifiEnable(true);
-						System.out.println("Wifi ON");
-						break;
-
-					case DialogInterface.BUTTON_NEGATIVE:
-						System.out.println("NO permission");
-						break;
-					}
-				}
-			};
-			AlertDialog.Builder builder = new AlertDialog.Builder(context);
-			builder.setMessage("Turn ON Wifi?")
-					.setPositiveButton("Yes", dialogClickListener)
-					.setNegativeButton("No", dialogClickListener).show();
-		}
-	}
-
-	public void wifiEnable(boolean status) {
-		wManager.setWifiEnabled(status);
-	}
 
 	public List<DatagramPacket> andysFound(int waitTime, int port) {
 		byte[] buf = new byte[1024];

@@ -33,12 +33,20 @@ public abstract class AndyActivity extends Activity {
 
 		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
 		// registerForContextMenu(view)
-		this.setKillOnDestroy(false);
+		setKillOnDestroy(false);
 
-		this.setContentView(createContentView());
+		setContentView(createContentView());
+		initViews();
+		initBackend();
 	}
 
 	protected abstract View createContentView();
+
+	protected void initViews() {
+	};
+
+	protected void initBackend() {
+	};
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
