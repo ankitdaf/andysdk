@@ -123,6 +123,7 @@ public class AndySpyCam implements PreviewCallback, Callback, PictureCallback {
 		mPreviewRunning = false;
 	}
 	
+	//TODO: Understand AsyncTask
 	private class ImageBroadCaster extends AsyncTask {
 		private static final int PREVIEW_PORT = 9020;
 
