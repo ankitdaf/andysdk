@@ -1,4 +1,4 @@
-package com.andyrobo.base.comm;
+package com.andyrobo.base.net;
 
 import java.io.IOException;
 import java.net.DatagramPacket;

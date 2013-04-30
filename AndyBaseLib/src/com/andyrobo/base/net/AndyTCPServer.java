@@ -1,4 +1,4 @@
-package com.andyrobo.base.comm;
+package com.andyrobo.base.net;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -11,7 +11,7 @@ import java.net.SocketTimeoutException;
 
 import android.util.Log;
 
-import com.andyrobo.base.comm.helpers.IServerHandler;
+import com.andyrobo.base.net.helpers.IServerHandler;
 
 public class AndyTCPServer {
 

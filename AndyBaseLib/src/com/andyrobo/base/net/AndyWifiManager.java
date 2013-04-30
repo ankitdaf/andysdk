@@ -1,9 +1,10 @@
-package com.andyrobo.base.comm;
+package com.andyrobo.base.net;
 
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
+import android.net.DhcpInfo;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 
@@ -84,6 +85,10 @@ public class AndyWifiManager {
 					.formatIpAddress(wInfo.getIpAddress());
 
 		return ipAddress;
+	}
+
+	public static DhcpInfo getDhcpInfo(Context c) {
+		return getWifiManager(c).getDhcpInfo();
 	}
 	
 }

@@ -21,6 +21,7 @@ public abstract class AndyActivity extends Activity {
 
 	protected static final String TAG = "AndyActivity";
 	private boolean killOnDestroy = false;
+	protected boolean showMenu;
 
 	protected final void setFullScreen() {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -50,9 +51,11 @@ public abstract class AndyActivity extends Activity {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		MenuInflater inflater = getMenuInflater();
-		inflater.inflate(R.menu.menu, menu);
-		// TODO Auto-generated method stub
+		if (showMenu) {
+			MenuInflater inflater = getMenuInflater();
+			inflater.inflate(R.menu.menu, menu);
+			// TODO Auto-generated method stub
+		}
 		return super.onCreateOptionsMenu(menu);
 	}
 

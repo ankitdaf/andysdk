@@ -1,4 +1,4 @@
-package com.andyrobo.base.motor;
+package com.andyrobo.base.motion;
 
 import android.content.Context;
 import android.media.AudioManager;
@@ -33,7 +33,7 @@ public class AndyMotion {
 						Thread.sleep(1000);
 						sendAudio();
 					} catch (InterruptedException e) {
-						Log.i(TAG, "audioThread interrupted");
+						// Log.i(TAG, "audioThread interrupted");
 						if (stopAudio) {
 							break;
 						}
@@ -48,8 +48,10 @@ public class AndyMotion {
 
 	private static final void sendAudio() {
 		if (motionBytes != null) {
-			Log.i(TAG, "Sending audio to motors");
-			AudioSerial.output(motionBytes);
+			// Log.i(TAG, "Sending audio to motors");
+			for (int i = 0; i < 3; i++) {
+				AudioSerial.output(motionBytes);
+			}
 			if (isZeroSpeed(motionBytes)) {
 				motionBytes = null;
 			}
@@ -113,7 +115,67 @@ public class AndyMotion {
 			b = (byte) (b | 2);
 		}
 
-		setBytes(b, leftSpeed, rightSpeed);
+		if (!block)
+			setBytes(b, leftSpeed, rightSpeed);
+	}
+
+	/**
+	 * Set Raw Values from -255 to +255 and stop afterwards
+	 * 
+	 * @param leftSpeed
+	 * @param RightSpeed
+	 * @param millis
+	 *            time to wait after stopping
+	 */
+
+	public static void setRawSpeeds(int leftSpeed, int rightSpeed, long millis) {
+		setRawSpeeds(leftSpeed, rightSpeed);
+		stop(millis);
+	}
+
+	static boolean block = false;
+
+	private static void stop(final long millis) {
+		if (millis > 0) {
+			block = true;
+			try {
+				Thread.sleep(millis);
+			} catch (InterruptedException e) {
+			}
+			block = false;
+			setRawSpeeds(0, 0);
+		} else {
+			setRawSpeeds(0, 0);
+		}
+	}
+
+	public static final int MOVE_STOP = 0;
+	public static final int MOVE_FORWARD = 1;
+	public static final int MOVE_BACK = 2;
+	public static final int MOVE_LEFT = 3;
+	public static final int MOVE_RIGHT = 4;
+
+	public static void move(int moveID, long millis) {
+		switch (moveID) {
+		case MOVE_STOP:
+			setRawSpeeds(0, 0);
+			break;
+		case MOVE_FORWARD:
+			setRawSpeeds(MAX_SPEED, MAX_SPEED, millis);
+			break;
+		case MOVE_BACK:
+			setRawSpeeds(-MAX_SPEED, -MAX_SPEED, millis);
+			break;
+		case MOVE_LEFT:
+			setRawSpeeds(MAX_SPEED, -MAX_SPEED, millis);
+			break;
+		case MOVE_RIGHT:
+			setRawSpeeds(-MAX_SPEED, MAX_SPEED, millis);
+			break;
+		default:
+			setRawSpeeds(0, 0);
+			break;
+		}
 	}
 
 	/*

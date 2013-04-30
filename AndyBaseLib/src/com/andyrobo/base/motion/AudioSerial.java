@@ -1,4 +1,4 @@
-package com.andyrobo.base.motor;
+package com.andyrobo.base.motion;
 
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -8,11 +8,9 @@ import android.media.AudioManager;
 import android.media.AudioTrack;
 import android.os.SystemClock;
 
-class AudioSerialSingleTrack {
+class AudioSerial {
 
-	private static Thread audiothread = null;
 	private static AudioTrack audiotrk = null;
-	private static byte generatedSnd[] = null;
 
 	// set that can be edited externally
 	public static int max_sampleRate = 48000;
@@ -76,23 +74,16 @@ class AudioSerialSingleTrack {
 	}
 
 	public static void output(String sendthis) {
-		if (sendthis == null)
-			return;
-		playque.add(SerialDAC((prefix + sendthis + postfix).getBytes()));
-		synchronized (audiothread) {
-			audiothread.notify();
+		if (sendthis != null) {
+			output((prefix + sendthis + postfix).getBytes());
 		}
-		// audiothread.interrupt();
 	}
 
 	public static void output(byte[] sendthis) {
-		if (sendthis == null)
-			return;
-		playque.add(SerialDAC(sendthis));
-		synchronized (audiothread) {
-			audiothread.notify();
+		if (sendthis != null) {
+			byte[] data = SerialDAC(sendthis);
+			playSound(data);
 		}
-		// audiothread.interrupt();
 	}
 
 	private static byte jitter = (byte) (4);
@@ -176,45 +167,8 @@ class AudioSerialSingleTrack {
 	// essentially a constructor, but i prefer to do a manual call.
 	public static void activate() {
 		UpdateParameters(true);
-
-		// Use a new tread as this can take a while
-		audiothread = new Thread() {
-			public void run() {
-				active = true;
-				synchronized (audiothread) {
-					while (active) {
-						try {
-							audiothread.wait(Long.MAX_VALUE);
-							while (playque.isEmpty() == false)
-								playSound();
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
-					}
-				}
-			}
-		};
-		audiothread.start();
-		while (active == false) // wait for the thread to actually turn on
-		{
-			SystemClock.sleep(50);
-		}
 	}
 
-	/**
-	 * 12-26 20:17:39.421: E/AndroidRuntime(16288): FATAL EXCEPTION: Thread-10
-	 * 12-26 20:17:39.421: E/AndroidRuntime(16288):
-	 * java.lang.IllegalStateException: Unable to retrieve AudioTrack pointer
-	 * for stop() 12-26 20:17:39.421: E/AndroidRuntime(16288): at
-	 * android.media.AudioTrack.native_stop(Native Method) 12-26 20:17:39.421:
-	 * E/AndroidRuntime(16288): at
-	 * android.media.AudioTrack.stop(AudioTrack.java:845) 12-26 20:17:39.421:
-	 * E/AndroidRuntime(16288): at
-	 * com.andyrobo.test.audioserial.AudioSerialSingleTrack
-	 * .deactivate(AudioSerialSingleTrack.java:203) 12-26 20:17:39.421:
-	 * E/AndroidRuntime(16288): at
-	 * com.andyrobo.test.audioserial.MainActivity$1.run(MainActivity.java:99)
-	 */
 	public static void deactivate() {
 		if (audiotrk != null) {
 			if (isAudioTrackInitialized()) {
@@ -225,8 +179,6 @@ class AudioSerialSingleTrack {
 			}
 			audiotrk.release();
 		}
-		// audioControl.relinquishAudioControl(parent);
-		// audioControl.setCallsOn(parent);
 	}
 
 	// public static void stop(PApplet parent) {
@@ -238,21 +190,13 @@ class AudioSerialSingleTrack {
 		}
 	}
 
-	public static boolean isPlaying() {
-		try {
-			return audiotrk.getPlaybackHeadPosition() < (generatedSnd.length);
-		} catch (Exception e) {
-			return false;
-		}
-	}
-
 	private static int minbufsize;
 	private static int length;
 
-	private static void playSound() {
+	private static void playSound(byte[] theSound) {
 		if (audiotrk != null && isAudioTrackInitialized()) {
-			if (generatedSnd != null) {
-				while (audiotrk.getPlaybackHeadPosition() < (generatedSnd.length))
+			if (theSound != null) {
+				while (audiotrk.getPlaybackHeadPosition() < (theSound.length))
 					SystemClock.sleep(20); // let existing sample finish first:
 											// this can probably be set to a
 											// smarter number using the
@@ -263,20 +207,15 @@ class AudioSerialSingleTrack {
 				audiotrk.pause();
 				audiotrk.reloadStaticData();
 				audiotrk.flush();
-
-				// audiotrk.release();
 			}
 		}
-		UpdateParameters(false); // might as well do it at every iteration, it's
-									// cheap
-		generatedSnd = playque.poll();
-		length = generatedSnd.length;
+		length = theSound.length;
 		if (minbufsize < length)
 			minbufsize = length;
 
 		audiotrk.setStereoVolume(1, 1);
 		// System.out.println(length);
-		audiotrk.write(generatedSnd, 0, length);
+		audiotrk.write(theSound, 0, length);
 
 		if (isAudioTrackInitialized()) {
 			audiotrk.play();

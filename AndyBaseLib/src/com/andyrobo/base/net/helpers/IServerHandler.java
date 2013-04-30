@@ -1,4 +1,4 @@
-package com.andyrobo.base.comm.helpers;
+package com.andyrobo.base.net.helpers;
 
 import java.net.ServerSocket;
 import java.net.Socket;
