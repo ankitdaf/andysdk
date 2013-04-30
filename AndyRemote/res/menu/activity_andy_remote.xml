@@ -1,0 +1,19 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/setIP"
+        android:title="Set Andy IP"
+        android:titleCondensed="Andy IP">
+    </item>
+    <item
+        android:id="@+id/showLocalIP"
+        android:title="Show Local IP"
+        android:titleCondensed="Local IP">
+    </item>
+    <item
+        android:id="@+id/findAndy"
+        android:title="Find Andy"
+        android:titleCondensed="Search">
+    </item>
+
+</menu>

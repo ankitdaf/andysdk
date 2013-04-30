@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/mainLayout"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#FFFFFF" >
+
+    <TextView
+        android:id="@+id/messageView"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:gravity="center_horizontal"
+        android:text="Hello Andy!" />
+
+    <ImageView
+        android:id="@+id/jsReverse"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:clickable="true"
+        android:contentDescription="jsReverse"
+        android:src="@drawable/back" />
+
+    <ImageView
+        android:id="@+id/jsForward"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_above="@+id/jsReverse"
+        android:layout_alignLeft="@+id/jsReverse"
+        android:layout_marginBottom="47dp"
+        android:contentDescription="jsForward"
+        android:src="@drawable/forward" />
+
+    <Button
+        android:id="@+id/btnConnect"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/messageView"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="44dp"
+        android:text="Connect" />
+
+    <ImageView
+        android:id="@+id/jsLeft"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_alignTop="@+id/jsRight"
+        android:layout_toLeftOf="@+id/jsReverse"
+        android:contentDescription="jsLeft"
+        android:src="@drawable/left" />
+
+    <ImageView
+        android:id="@+id/jsRight"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_alignTop="@+id/jsForward"
+        android:layout_marginTop="63dp"
+        android:layout_toRightOf="@+id/jsReverse"
+        android:clickable="false"
+        android:contentDescription="jsRight"
+        android:src="@drawable/right" />
+
+    <TextView
+        android:id="@+id/search"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/btnConnect"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="18dp"
+        android:padding="10dp"
+        android:text="Searching..."
+        android:textStyle="bold"
+        android:textSize="25sp" />
+
+</RelativeLayout>
