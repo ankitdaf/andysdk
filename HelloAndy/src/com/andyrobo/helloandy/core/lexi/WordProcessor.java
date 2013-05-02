@@ -2,6 +2,7 @@ package com.andyrobo.helloandy.core.lexi;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import android.util.Log;
@@ -13,21 +14,21 @@ import com.andyrobo.helloandy.core.bktree.LevenshteinDistance;
 public class WordProcessor {
 
 	public final static Response[] BASIC_RESPONSES = new Response[] {
-			new Response("hello andy how are you",
+			new Response("hello",
 					"hey! i am great... how are you?", 0, AndyFace.LAUGH),
-			new Response("hi there", "hello! whassup?", 1, AndyFace.LAUGH),
-			new Response("andy move forward", "okay as you wish!", 1,
+			new Response("hi", "hello! whassup?", 1, AndyFace.LAUGH),
+			new Response("forward", "okay as you wish!", 1,
 					AndyFace.SMILE),
-			new Response("andy come here", "coming!", 1, AndyFace.SMILE),
-			new Response("go back", "why? whats wrong?", 2, AndyFace.SCARED),
-			new Response("go away", "really?", 2, AndyFace.SCARED),
+			new Response("come", "coming!", 1, AndyFace.SMILE),
+			new Response("back", "why? whats wrong?", 2, AndyFace.SCARED),
+			new Response("away", "really?", 2, AndyFace.SCARED),
 			new Response("reverse", "backing up...", 2, AndyFace.LAUGH),
-			new Response("turn left", "turning left!", 3, AndyFace.SMILE),
-			new Response("turn right", "turning right!", 4, AndyFace.SMILE),
-			new Response("you are stupid", "OK! I dont appreciate that", 10,
+			new Response("left", "turning left!", 3, AndyFace.SMILE),
+			new Response("right", "turning right!", 4, AndyFace.SMILE),
+			new Response("stupid", "OK! I dont appreciate that", 10,
 					AndyFace.ANGRY),
 			new Response("bad robot", "I'm so sorry!", 2, AndyFace.SCARED),
-			new Response("i am sorry", "it's okay buddy!", 1, AndyFace.SMILE),
+			new Response("sorry", "it's okay buddy!", 1, AndyFace.SMILE),
 			new Response("stop", "OK!", 0, AndyFace.LAUGH) };
 
 	private static final String TAG = "WordProcessor";
@@ -55,7 +56,8 @@ public class WordProcessor {
 
 		for (int i = 0; i < matches.size(); i++) {
 			String match = matches.get(i);
-			r = compareToResponse(match);
+			//Log.i("Matched", match);
+			r = compareToResponse(match.toLowerCase(Locale.ENGLISH).trim());
 			if (r != null) {
 				break;
 			}
@@ -72,8 +74,8 @@ public class WordProcessor {
 	private Response compareToResponse(String match) {
 		for (int i = 0; i < responses.length; i++) {
 			Response r = responses[i];
-			String query = r.getQuery().trim();
-			if (match.contains(query) || query.contains(match)) {
+			String query = r.getQuery().toLowerCase(Locale.ENGLISH);
+			if (match.contains(query)) {
 				return r;
 			}
 		}

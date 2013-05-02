@@ -170,6 +170,8 @@ public class VoiceCommandMode extends AbstractMode implements IWPHandler {
 	@Override
 	public void handleResponse(String responseString, int move, int face) {
 		if (responseString == null) {
+			AndyFace.confused();
+			setStatus("Huh ?");
 			ready = true;
 			return;
 		}
