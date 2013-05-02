@@ -11,8 +11,8 @@ public final class R {
 		public static final int textView2 = 0x7f080002;
 		public static final int textView3 = 0x7f080004;
 		public static final int textView1 = 0x7f080003;
-		public static final int menu_settings = 0x7f08000f;
-		public static final int menu_options = 0x7f080010;
+		public static final int menu_settings = 0x7f080010;
+		public static final int menu_options = 0x7f080011;
 		public static final int ImageView = 0x7f080001;
 		public static final int relativeLay = 0x7f080000;
 	}
