@@ -7,6 +7,7 @@ import android.util.Log;
 public class AndyMotion {
 
 	public static final String TAG = "AndyMotion";
+	public static final String PREFIX = "M";
 
 	static final int MIN_SPEED = 60;
 	static final int MAX_SPEED = 255;
@@ -130,7 +131,9 @@ public class AndyMotion {
 
 	public static void setRawSpeeds(int leftSpeed, int rightSpeed, long millis) {
 		setRawSpeeds(leftSpeed, rightSpeed);
-		stop(millis);
+		if (millis > 0) {
+			stop(millis);
+		}
 	}
 
 	static boolean block = false;

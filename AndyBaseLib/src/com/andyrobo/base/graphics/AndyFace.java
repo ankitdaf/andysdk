@@ -19,6 +19,8 @@ public class AndyFace {
 	public static final int ANGRY = 2;
 	public static final int CONFUSED = 3;
 	public static final int SCARED = 4;
+	
+	public static final String PREFIX = "F";
 
 	static final int[] faceDrawables = { R.drawable.smile, R.drawable.laugh,
 			R.drawable.angry, R.drawable.confused, R.drawable.scared };

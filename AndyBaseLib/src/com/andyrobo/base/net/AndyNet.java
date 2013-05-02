@@ -8,15 +8,24 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.net.DhcpInfo;
+import android.text.InputType;
 import android.util.Log;
+import android.widget.EditText;
 
 public class AndyNet {
+
+	public static final byte[] CONNECTION_REQUEST = "*#06#".getBytes();
+	public static final byte[] DISCONNECTION_REQUEST = "*#07#".getBytes();
 
 	private static final String TAG = "AndyNet";
 	public static final int BROADCAST_PORT = 3030;
 	public static final int TCP_PORT = 9000;
+
 	private static boolean doBroadcast = false;
 
 	public static final InetAddress getBroadcastIP(Context c) {
@@ -55,7 +64,7 @@ public class AndyNet {
 			while ((System.currentTimeMillis() < wait) || doBroadcast) {
 				socket.send(packet);
 				Thread.sleep(1000);
-				Log.d("AndyNet", "broadcasting");
+				// Log.d("AndyNet", "broadcasting");
 			}
 			socket.close();
 			return true;
@@ -88,12 +97,12 @@ public class AndyNet {
 					if (!contains(p, packetList)) {
 						packetList.add(p);
 						Log.i(TAG, "Adding packet " + p);
-						if(!deepSearch) {
+						if (!deepSearch) {
 							break;
 						}
 					}
 				} catch (SocketTimeoutException e) {
-					//Do nothing
+					// Do nothing
 					Log.e(TAG, "Timeout " + e.getMessage());
 				}
 			}
@@ -127,5 +136,38 @@ public class AndyNet {
 			}
 		}
 		return false;
+	}
+
+	public interface IConnectionDialogInterface {
+		void connect(String ip);
+	}
+
+	public static final void openConnectDialog(final Context c,
+			String defaultIP, final IConnectionDialogInterface cdi) {
+		AlertDialog.Builder connectDialog = new AlertDialog.Builder(c);
+		connectDialog.setTitle("Connect");
+		connectDialog.setMessage("IP address of target device");
+
+		// Set an EditText view to get user input
+		final EditText input = new EditText(c);
+		input.setEms(10);
+		if (defaultIP == null) {
+			defaultIP = AndyWifiManager.getIP(c);
+		}
+		input.setText(defaultIP);
+
+		input.setInputType(InputType.TYPE_CLASS_NUMBER
+				| InputType.TYPE_NUMBER_FLAG_DECIMAL);
+		connectDialog.setView(input);
+
+		connectDialog.setPositiveButton("Ok", new OnClickListener() {
+
+			@Override
+			public void onClick(DialogInterface arg0, int arg1) {
+				cdi.connect(input.getText().toString());
+			}
+		});
+		connectDialog.setNegativeButton("Cancel", null);
+		connectDialog.show();
 	}
 }
