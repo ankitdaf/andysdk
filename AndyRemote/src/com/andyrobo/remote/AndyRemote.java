@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Handler;
 import android.util.Log;
@@ -20,6 +22,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,6 +32,7 @@ import com.andyrobo.base.AndyActivity;
 import com.andyrobo.base.graphics.AndyFace;
 import com.andyrobo.base.motion.AndyMotion;
 import com.andyrobo.base.net.AndyNet;
+import com.andyrobo.base.net.AndyWifiManager;
 import com.andyrobo.base.utils.AndyUtils;
 
 public class AndyRemote extends AndyActivity {
@@ -44,6 +48,8 @@ public class AndyRemote extends AndyActivity {
 	private View faceButtons;
 
 	private RemoteClient client;
+	private ImageView camView;
+	private CamThread camThread;
 
 	@Override
 	protected View createContentView() {
@@ -51,9 +57,26 @@ public class AndyRemote extends AndyActivity {
 				R.layout.activity_andy_remote, null);
 		return root;
 	}
-
+	
+	private void toggleVisibility(View v) {
+		if(v.getVisibility() == View.VISIBLE) {
+			v.setVisibility(View.INVISIBLE);
+		} else {
+			v.setVisibility(View.VISIBLE);
+		}
+	}
+	
 	@Override
 	protected void initViews() {
+		
+		camView = (ImageView) findViewById(R.id.spyCamView);
+		camView.setOnClickListener(new OnClickListener() {
+			
+			public void onClick(View arg0) {
+				toggleVisibility(faceButtons);
+			}
+		});
+		
 		searchingView = (TextView) findViewById(R.id.search);
 		searchingView.setTextColor(Color.WHITE);
 		searchingView.setBackgroundResource(R.drawable.bg);
@@ -77,7 +100,7 @@ public class AndyRemote extends AndyActivity {
 				}
 			}
 		});
-
+		
 		hookListener(findViewById(R.id.jsForward), AndyMotion.MOVE_FORWARD);
 		hookListener(findViewById(R.id.jsReverse), AndyMotion.MOVE_BACK);
 		hookListener(findViewById(R.id.jsLeft), AndyMotion.MOVE_LEFT);
@@ -91,7 +114,6 @@ public class AndyRemote extends AndyActivity {
 		hookFaceButton(findViewById(R.id.ismile), AndyFace.SMILE);
 		hookFaceButton(findViewById(R.id.ihappy), AndyFace.LAUGH);
 		hookFaceButton(findViewById(R.id.iscared), AndyFace.SCARED);
-
 	}
 
 	private void hookFaceButton(View v, final int andyFace) {
@@ -120,14 +142,21 @@ public class AndyRemote extends AndyActivity {
 
 	@Override
 	protected void initBackend() {
+		AndyWifiManager.activateWifi(false, this);
+
+		
 		client = new RemoteClient(AndyNet.TCP_PORT, 8) {
 			@Override
-			public void onConnect() {
+			public void onConnect(String ip) {
+				setTargetIP(ip);
+				camThread = new CamThread(camView, h);
+				new Thread(camThread).start();
 				handleConnectionSuccess();
 			}
 			
 			@Override
 			public void onDisconnect() {
+				camThread.stop();
 				handleDisconnectionSuccess();
 			}
 		};
@@ -140,12 +169,24 @@ public class AndyRemote extends AndyActivity {
 			t.start();
 		} else {
 			// connect using a text input
-			AndyNet.openConnectDialog(this, "192.168.1.3", client);
+			AndyNet.openConnectDialog(this, getTargetIP(), client);
 		}
 	}
 	
 	protected void performDisconnect() {
 		client.disconnect();
+	}
+	
+	private String getTargetIP() {
+		SharedPreferences prefs = getPreferences(MODE_PRIVATE);
+		return prefs.getString(robotIPKey, AndyWifiManager.getIP(this));
+	}
+	
+	private void setTargetIP(String newIP) {
+		SharedPreferences prefs = getPreferences(MODE_PRIVATE);
+		SharedPreferences.Editor e = prefs.edit();
+		e.putString(robotIPKey, newIP);
+		e.commit();
 	}
 
 	protected void handleDisconnectionSuccess() {
@@ -153,6 +194,7 @@ public class AndyRemote extends AndyActivity {
 		faceButtons.setVisibility(View.INVISIBLE);
 		buttonConnect.setText("Connect");
 		cbSearch.setVisibility(View.VISIBLE);
+		camView.setVisibility(View.INVISIBLE);
 	}
 
 	protected void handleConnectionSuccess() {
@@ -160,6 +202,8 @@ public class AndyRemote extends AndyActivity {
 		faceButtons.setVisibility(View.VISIBLE);
 		buttonConnect.setText("Disconnect");
 		cbSearch.setVisibility(View.INVISIBLE);
+		camView.setVisibility(View.VISIBLE);
+		camView.setImageDrawable(null);
 	}
 
 	public void showAndyList() {
@@ -256,29 +300,26 @@ public class AndyRemote extends AndyActivity {
 			}
 		}
 	};
-	/*
-	 * private IClientHandler clientHandler = new IClientHandler() {
-	 * 
-	 * private final AndyTCPClient client = new AndyTCPClient();
-	 * 
-	 * public boolean isConnected() { Socket s = client.getSocket(); if (s !=
-	 * null) { return !s.isClosed(); // NOTE: need to call isClosed since //
-	 * isConnected gives true even if closed // (disconnected) } return false; }
-	 * 
-	 * public boolean connect(String ipAddress) { try { boolean connected =
-	 * client.connect( InetAddress.getByName(ipAddress), AndyNet.TCP_PORT); if
-	 * (connected) { AndyRemote.this.handleConnectionSuccess(); } else {
-	 * showToast("Failed to connect. Try again.", Toast.LENGTH_SHORT); } return
-	 * connected; } catch (UnknownHostException e) { e.printStackTrace(); }
-	 * 
-	 * return false; }
-	 * 
-	 * public boolean disconnect() { if (client != null) { return
-	 * client.disconnect(); } return false; }
-	 * 
-	 * public byte[] sendData(byte[] data) { return client.sendData(data,
-	 * false);
-	 * 
-	 * }; };
-	 */
+
+	private void exit() {
+		AndyWifiManager.rollBackWifiState(this);
+		setKillOnDestroy(true);
+		finish();
+	}
+	
+	@Override
+	public void onBackPressed() {
+		AlertDialog.Builder exitDialog = new AlertDialog.Builder(this);
+		exitDialog.setTitle("Quit?");
+		exitDialog.setMessage("Really want to quit?");
+
+		exitDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+
+			public void onClick(DialogInterface arg0, int arg1) {
+				exit();
+			}
+		});
+		exitDialog.setNegativeButton("Cancel", null);
+		exitDialog.show();
+	}
 }

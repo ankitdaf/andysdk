@@ -6,6 +6,15 @@
     android:background="#FFFFFF" >
 
     <ImageView
+        android:id="@+id/spyCamView"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:clickable="false"
+        android:contentDescription="camView" />
+
+    <ImageView
         android:id="@+id/jsReverse"
         android:layout_width="80dp"
         android:layout_height="80dp"
@@ -145,5 +154,17 @@
             android:padding="2dp"
             android:src="@drawable/confusedicon" />
     </LinearLayout>
+
+    <!--
+    <CheckBox
+        android:id="@+id/cbSpyMode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/btnConnect"
+        android:layout_alignBottom="@+id/btnConnect"
+        android:layout_alignParentLeft="true"
+        android:text="SpyCam"
+        android:textSize="10sp" />
+    -->
 
 </RelativeLayout>
