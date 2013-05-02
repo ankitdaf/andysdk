@@ -74,29 +74,44 @@ public class DemoMode extends AbstractMode implements OnTouchListener {
 		alert.show();
 	}
 
+	float lastX = 0;
+	float lastY = 0;
+
 	@Override
 	public boolean onTouch(View v, MotionEvent m) {
 
 		if (m.getAction() == MotionEvent.ACTION_UP) {
 			if (b == null || b.isCompleted()) {
-				runBehaviour();
+				float x = m.getX();
+				float y = m.getY();
+
+				double d = getDistance(x, y);
+				runBehaviour(d);
 			}
-		} 
+		}
 
 		return true;
 	}
 
+	private final double getDistance(float x, float y) {
+		double d = Math.sqrt(Math.pow(x - lastX, 2) + Math.pow(y - lastY, 2));
+		lastX = x;
+		lastY = y;
+		return d;
+	}
+
 	private IAndyBehaviour b;
 
-	private void runBehaviour() {
-		int r = (int) (Math.random() * 10);
-		//Log.i(TAG, "" + r);
-		if (r > 5) {
+	private void runBehaviour(double d) {
+		Log.i("Distance", d + "");
+
+		if (d < 120) {
+			// Touching the same point -- angry
 			b = new BehaviourAngry(10, 3000);
 		} else {
-			b = new BehaviourScared(2000);
+			b = new BehaviourScared(1000);
 		}
-		
+
 		b.start();
 	}
 }
