@@ -12,7 +12,6 @@ import android.hardware.Camera;
 import android.hardware.Camera.PictureCallback;
 import android.hardware.Camera.PreviewCallback;
 import android.hardware.Camera.Size;
-import android.os.AsyncTask;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceHolder.Callback;
@@ -24,11 +23,11 @@ public class AndySpyCam implements PreviewCallback, Callback, PictureCallback {
 
 	private static final String TAG = "AndySpyCam";
 	
+	public static final int PREVIEW_PORT = 9020;
 	private Camera mCamera;
 	private boolean mPreviewRunning;
 	private boolean broadCast;
 	private InetAddress ipAddress;
-
 	
 	public static final AndySpyCam SPYCAM = new AndySpyCam();
 	
@@ -42,6 +41,10 @@ public class AndySpyCam implements PreviewCallback, Callback, PictureCallback {
 		SurfaceHolder holder = sView.getHolder();
 		holder.addCallback(this);
 		holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+	}
+	
+	public void setReceiverIP(InetAddress inetAddress) {
+		this.ipAddress = inetAddress;
 	}
 	
 	public boolean setReceiverIP(String ipAddress) {
@@ -68,9 +71,12 @@ public class AndySpyCam implements PreviewCallback, Callback, PictureCallback {
 		Log.d(TAG, "Picture Capture");
 	}
 
+	ImageBroadCaster b = new ImageBroadCaster();
+	
 	public void onPreviewFrame(byte[] data, Camera cam) {
+		Log.i(TAG, "SpyCam Data Size: " + data.length);
 		if (broadCast) {
-			new ImageBroadCaster().execute(this.mCamera, data);
+			b.sendImage(this.mCamera, data);
 		}
 	}
 
@@ -124,9 +130,7 @@ public class AndySpyCam implements PreviewCallback, Callback, PictureCallback {
 	}
 	
 	//TODO: Understand AsyncTask
-	private class ImageBroadCaster extends AsyncTask {
-		private static final int PREVIEW_PORT = 9020;
-
+	private class ImageBroadCaster {
 		public final static int HEADER_SIZE = 5;
 		public final static int DATAGRAM_MAX_SIZE = 1450 - HEADER_SIZE;
 		int frame_nb = 0;
@@ -266,13 +270,7 @@ public class AndySpyCam implements PreviewCallback, Callback, PictureCallback {
 			decodeYUV420SP(mRGBData, camData, width_ima, height_ima);
 			mBitmap.setPixels(mRGBData, 0, width_ima, 0, 0, width_ima, height_ima);
 
-		}
-
-		@Override
-		protected Object doInBackground(Object... arg0) {
-			sendImage((Camera) arg0[0], (byte[]) arg0[1]);
 			sendUDP();
-			return null;
 		}
 	}
 }
