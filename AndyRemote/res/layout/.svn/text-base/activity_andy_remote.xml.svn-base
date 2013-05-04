@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main_view"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#FFFFFF" >
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" >
+
+        <TextView
+            android:id="@+id/messageView"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:gravity="center_horizontal"
+            android:text="Hello Andy!" />
+
+        <ImageView
+            android:id="@+id/spyCam"
+            android:layout_width="240dp"
+            android:layout_height="320dp"
+            android:layout_below="@id/messageView"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="5dp"
+            android:contentDescription="spyCam"
+            android:scaleType="fitStart"
+            android:src="@drawable/logo" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" >
+
+        <ImageView
+            android:id="@+id/jsReverse"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:clickable="true"
+            android:contentDescription="jsReverse"
+            android:src="@drawable/back" />
+
+        <ImageView
+            android:id="@+id/jsRight"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_above="@id/jsReverse"
+            android:layout_marginBottom="-20dp"
+            android:layout_marginLeft="-20dp"
+            android:layout_toRightOf="@id/jsReverse"
+            android:clickable="false"
+            android:contentDescription="jsRight"
+            android:src="@drawable/right" />
+
+        <ImageView
+            android:id="@+id/jsLeft"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_above="@id/jsReverse"
+            android:layout_marginBottom="-20dp"
+            android:layout_marginRight="-20dp"
+            android:layout_toLeftOf="@id/jsReverse"
+            android:contentDescription="jsLeft"
+            android:src="@drawable/left" />
+
+        <ImageView
+            android:id="@+id/jsForward"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_above="@id/jsLeft"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="-20dp"
+            android:contentDescription="jsForward"
+            android:src="@drawable/forward" />
+
+    </RelativeLayout>
+
+</FrameLayout>

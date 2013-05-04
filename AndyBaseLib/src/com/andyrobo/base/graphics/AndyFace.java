@@ -1,8 +1,6 @@
 package com.andyrobo.base.graphics;
 
-import com.andyrobo.base.AndyActivity;
-import com.andyrobo.base.R;
-
+import android.app.Activity;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.view.ViewGroup.LayoutParams;
@@ -11,27 +9,34 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
+import com.andyrobo.base.R;
+
 public class AndyFace {
+
+	public static final int RANDOM = -1;
+	public static final int SMILE = 0;
+	public static final int LAUGH = 1;
+	public static final int ANGRY = 2;
+	public static final int CONFUSED = 3;
+	public static final int SCARED = 4;
 	
-	public static final byte RANDOM = 0x05;
-	public static final byte SMILE = 0x0a;
-	public static final byte LAUGH = 0x0b;
-	public static final byte ANGRY = 0x0c;
-	public static final byte CONFUSED = 0x0d;
-	public static final byte SCARED = 0x0e;
+	public static final String PREFIX = "F";
+
+	static final int[] faceDrawables = { R.drawable.smile, R.drawable.laugh,
+			R.drawable.angry, R.drawable.confused, R.drawable.scared };
 
 	private static ImageView img;
-	private static AndyActivity activity;
+	private static Activity activity;
 
 	private static final Handler h = new Handler();
 
-	public static FrameLayout init(AndyActivity a, boolean fullScreen) {
+	public static FrameLayout init(Activity a, boolean fullScreen) {
 		activity = a;
 		FrameLayout faceLayout = new FrameLayout(a);
 		faceLayout.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT,
 				LayoutParams.FILL_PARENT));
 		faceLayout.setKeepScreenOn(true);
-		
+
 		if (fullScreen) {
 
 			a.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -44,7 +49,7 @@ public class AndyFace {
 				LayoutParams.FILL_PARENT));
 
 		smile();
-		
+
 		faceLayout.addView(img, 0);
 		return faceLayout;
 	}
@@ -54,114 +59,75 @@ public class AndyFace {
 	}
 
 	public static void smile() {
-		showFace(R.drawable.smile);
+		showFaceDrawable(R.drawable.smile);
 	}
 
 	public static void angry() {
-		showFace(R.drawable.angry);
+		showFaceDrawable(R.drawable.angry);
 	}
 
 	public static void confused() {
-		showFace(R.drawable.confused);
+		showFaceDrawable(R.drawable.confused);
 	}
 
 	public static void laugh() {
-		showFace(R.drawable.laugh);
+		showFaceDrawable(R.drawable.laugh);
 	}
 
 	public static void scared() {
-		showFace(R.drawable.scared);
-	}
-	
-	static final int[] faces = {
-			R.drawable.smile,
-			R.drawable.laugh,
-			R.drawable.angry,
-			R.drawable.confused,
-			R.drawable.scared
-	};
-	
-	public static void random() {
-		int n = faces.length - 1;
-		int f = (int)(n * Math.random() + 1);
-		
-		if(f > n) {
-			f = n;
-		}
-		if(f < 0) {
-			f = 0;
-		}
-		
-		showFace(faces[f]);
+		showFaceDrawable(R.drawable.scared);
 	}
 
-	public static Drawable getFace(int faceID) {
+	private static int oldF = 0;
+
+	public static void random(boolean alwaysNew) {
+		int n = faceDrawables.length - 1;
+		int f = (int) (n * Math.random() + 1);
+		
+		f = getValidIndex(f);
+		
+		if ((f == oldF) && alwaysNew) {
+			random(alwaysNew);
+		} else {
+			showFaceDrawable(faceDrawables[f]);
+			oldF = f;
+		}
+	}
+	
+	private static int getValidIndex(int f) {
+		int n = faceDrawables.length - 1;
+		if (f > n) {
+			f = n;
+		}
+		if (f < 0) {
+			f = 0;
+		}
+		return f;
+	}
+
+	private static Drawable getFaceDrawable(int drawableID) {
 		if (activity == null) {
 			throw new NullPointerException("AndyFace not initialized");
 		}
-		return activity.getResources().getDrawable(faceID);
+		//Log.i("AndyFace", "Face: " + drawableID);
+		return activity.getResources().getDrawable(drawableID);
 	}
-
-	private static void showFace(final int faceID) {
+	
+	private static final void showFaceDrawable(final int drawableID) {
 		h.post(new Runnable() {
 			@Override
 			public void run() {
-				img.setBackgroundDrawable(getFace(faceID));
+				img.setBackgroundDrawable(getFaceDrawable(drawableID));
 			}
 		});
 	}
 
-	// public BitmapDrawable face;
-	//
-	// public static
-	//
-	// public boolean andyNormal(Context context, RelativeLayout rl) {
-	// face = (BitmapDrawable) context.getResources().getDrawable(
-	// R.drawable.smile);
-	// showFace(face, context, rl);
-	// return true;
-	// }
-	//
-	// public boolean andySmile(Context context, RelativeLayout rl) {
-	// face = (BitmapDrawable) context.getResources().getDrawable(
-	// R.drawable.laugh);
-	// showFace(face, context, rl);
-	// return true;
-	// }
-	//
-	// public boolean andyAngry(Context context, RelativeLayout rl) {
-	// face = (BitmapDrawable) context.getResources().getDrawable(
-	// R.drawable.angry);
-	// showFace(face, context, rl);
-	// return true;
-	// }
-	//
-	// public boolean andyConfused(Context context, RelativeLayout rl) {
-	// face = (BitmapDrawable) context.getResources().getDrawable(
-	// R.drawable.confused);
-	// showFace(face, context, rl);
-	// return true;
-	// }
-	//
-	// public boolean andyScared(Context context, RelativeLayout rl) {
-	// face = (BitmapDrawable) context.getResources().getDrawable(
-	// R.drawable.scared);
-	// showFace(face, context, rl);
-	// return true;
-	// }
-	//
-	// private final Handler faceHandler = new Handler();
-	//
-	// private void showFace(final BitmapDrawable andyFace, final Context
-	// context, final RelativeLayout rl) {
-	//
-	// faceHandler.post(new Runnable() {
-	//
-	// public void run() {
-	// rl.setBackgroundDrawable(andyFace);
-	// }
-	// });
-	//
-	// }
-
+	public static void showFace(final int faceID) {
+		if (faceID == RANDOM) {
+			random(true);
+		} else {
+			int f = getValidIndex(faceID);
+			showFaceDrawable(faceDrawables[f]);
+		}
+	}
 }

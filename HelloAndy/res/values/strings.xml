@@ -2,7 +2,8 @@
 <resources>
 
     <string name="app_name">HelloAndy</string>
-    <string name="menu_help">Help</string>
-    <string name="help_message">Swipe on Andy\'s face to move Andy!</string>
+    <string name="menu_modes">Andy Modes</string>
+    <string name="demo_message">Touch on Andy\'s face to move Andy!</string>
+    <string name="first_hint">Hello! I am Andy!\nSwipe down my hair to start!</string>
 
 </resources>

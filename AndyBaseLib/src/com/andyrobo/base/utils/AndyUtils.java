@@ -2,31 +2,20 @@ package com.andyrobo.base.utils;
 
 import java.util.List;
 
+import android.app.Activity;
+import android.content.Context;
 import android.hardware.Camera.Size;
-import android.net.wifi.WifiInfo;
-import android.net.wifi.WifiManager;
 import android.view.Display;
+import android.view.LayoutInflater;
 import android.view.Surface;
 import android.view.ViewGroup.LayoutParams;
 
-import com.andyrobo.base.AndyActivity;
-
 public class AndyUtils {
-	
+
 	public static final int ByteToInt(byte b) {
 		return b & 0xff;
 	}
-	
-	public static final String getWifiAddress(AndyActivity a) {
-		WifiManager myWifiManager = (WifiManager) a.getSystemService(AndyActivity.WIFI_SERVICE);
-		WifiInfo myWifiInfo = myWifiManager.getConnectionInfo();
 
-		String ipAddress = android.text.format.Formatter
-				.formatIpAddress(myWifiInfo.getIpAddress());
-
-		return ipAddress;
-	}
-	
 	public static Size getOptimalPreviewSize(List<Size> sizes, int w, int h) {
 		final double ASPECT_TOLERANCE = 0.05;
 		double targetRatio = (double) w / h;
@@ -88,6 +77,12 @@ public class AndyUtils {
 	}
 
 	public static LayoutParams getLayoutFill() {
-		return new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
+		return new LayoutParams(LayoutParams.FILL_PARENT,
+				LayoutParams.FILL_PARENT);
+	}
+
+	public static LayoutInflater getLayoutInflater(Activity a) {
+		return (LayoutInflater) a.getApplicationContext().getSystemService(
+				Context.LAYOUT_INFLATER_SERVICE);
 	}
 }
