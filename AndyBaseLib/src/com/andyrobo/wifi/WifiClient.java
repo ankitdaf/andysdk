@@ -129,6 +129,7 @@ public class WifiClient{
 		try {
 			socket = new Socket(connectTo, PORT);
 			socket.setKeepAlive(true);
+			socket.setTcpNoDelay(true);	// Real time commands, disable Nagle's algorithm
 			close=false;
 			System.out.println("Connected to "+connectTo+" on PORT "+PORT);
 

@@ -11,8 +11,8 @@ public final class R {
 		public static final int textView2 = 0x7f080002;
 		public static final int textView3 = 0x7f080004;
 		public static final int textView1 = 0x7f080003;
-		public static final int menu_settings = 0x7f080010;
-		public static final int menu_options = 0x7f080011;
+		public static final int menu_settings = 0x7f08000e;
+		public static final int menu_options = 0x7f08000f;
 		public static final int ImageView = 0x7f080001;
 		public static final int relativeLay = 0x7f080000;
 	}
@@ -29,16 +29,16 @@ public final class R {
 	public static final class layout {
 		public static final int activity_splash = 0x7f030000;
 		public static final int background2 = 0x7f030002;
-		public static final int transition = 0x7f030008;
+		public static final int transition = 0x7f030007;
 		public static final int background1 = 0x7f030001;
 	}
 	public static final class drawable {
-		public static final int logo = 0x7f020007;
-		public static final int laugh = 0x7f020006;
+		public static final int logo = 0x7f020006;
+		public static final int laugh = 0x7f020005;
 		public static final int confused = 0x7f020002;
-		public static final int ic_launcher = 0x7f020005;
-		public static final int scared = 0x7f02000b;
+		public static final int ic_launcher = 0x7f020004;
+		public static final int scared = 0x7f020009;
 		public static final int angry = 0x7f020000;
-		public static final int smile = 0x7f02000c;
+		public static final int smile = 0x7f02000a;
 	}
 }
