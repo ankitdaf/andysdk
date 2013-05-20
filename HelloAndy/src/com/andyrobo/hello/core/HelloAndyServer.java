@@ -133,7 +133,7 @@ public class HelloAndyServer extends UDPServer {
 
 	@Override
 	protected void onTimeout(SocketTimeoutException e) {
-		if (showEmotion) {
+		if (showEmotion && toCount==5) {
 			AndyFace.random(true);
 			showToast(
 					RandomMessage
