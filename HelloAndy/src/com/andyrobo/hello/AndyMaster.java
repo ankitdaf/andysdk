@@ -43,7 +43,6 @@ public class AndyMaster extends AndyActivity {
 
 	@Override
 	protected View createContentView() {
-		// TODO: lock screen orientation
 		rootLayout = AndyFace.init(this, true);
 		face = AndyFace.getFaceLayer();
 		return rootLayout;

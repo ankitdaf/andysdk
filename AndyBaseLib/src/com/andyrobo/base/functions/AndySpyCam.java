@@ -99,7 +99,27 @@ public class AndySpyCam implements PreviewCallback, Callback, PictureCallback {
 
 	public void surfaceCreated(SurfaceHolder holder) {
 		Log.d(TAG, "surface created");
-		mCamera = Camera.open(0); // open() wont for devices with no back camera , eg Nexus 7, use open(0)
+		boolean noBackCamera=false;
+		try {
+			mCamera = Camera.open();
+		}
+		catch (NullPointerException e) {
+			Log.d(TAG, "No back camera found");
+			noBackCamera = true;
+		}
+		catch (RuntimeException e) {
+			Log.d(TAG, "Cannot open Camera");
+			noBackCamera = true;
+		}
+		if (noBackCamera) {
+			try {
+				mCamera = Camera.open(0); // Try front camera
+			}
+			catch (Exception e) {
+				Log.d(TAG, "Cannot open camera");
+				return;
+			}
+		}
 
 		Camera.Parameters p = mCamera.getParameters();
 		p.setPreviewFrameRate(30);
