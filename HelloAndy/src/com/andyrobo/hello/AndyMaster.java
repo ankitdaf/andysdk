@@ -28,6 +28,7 @@ import com.andyrobo.hello.modes.IMode;
 import com.andyrobo.hello.modes.ModeAdapter;
 import com.andyrobo.hello.modes.RemoteCarMode;
 import com.andyrobo.hello.modes.SpyBotMode;
+import com.andyrobo.hello.modes.StreamingSpyBotMode;
 import com.andyrobo.hello.modes.VoiceCommandMode;
 
 public class AndyMaster extends AndyActivity {
@@ -118,6 +119,7 @@ public class AndyMaster extends AndyActivity {
 		andyModes.add(new RemoteCarMode(this));
 		andyModes.add(new SpyBotMode(this));
 		andyModes.add(new VoiceCommandMode(this));
+		andyModes.add(new StreamingSpyBotMode(this));
 		andyModes.add(new AbstractMode(this) {
 
 			@Override
